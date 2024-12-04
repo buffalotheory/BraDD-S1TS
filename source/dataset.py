@@ -95,6 +95,7 @@ class BraDDS1TSDataset(Dataset):
             torch.save(stats, normalization_path)
 
         self._path = os.path.join(path, 'Samples')
+        #import pdb; pdb.set_trace()
         df = pandas.read_csv(os.path.join(path, 'meta.csv'), index_col=0)
         self._meta = df[df['{}_set'.format(split)] == phase].reset_index(drop=True)
         self._transforms = [
@@ -198,4 +199,8 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
     dataset = BraDDS1TSDataset(**args, phase='train')
     print(type(dataset[5]['Targets']))
+    print(dataset[5].keys())
+    print(len(dataset))
+    for key in dataset[5].keys():
+        print(f'    {key:20s} shape: {dataset[5][key].shape}')
     print('EOF')

@@ -1,3 +1,9 @@
+.DS_Store
+/paper/
+/.archive/
+/.v312/
+/out/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

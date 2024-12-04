@@ -1,3 +1,5 @@
+import logging
+
 import os
 from glob import glob
 import argparse
@@ -22,7 +24,7 @@ def create_folder(*names) -> str:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--Storing_experimentName', type=str, default='Default')
-    parser.add_argument('--Storing_wandbProject', type=str)
+    parser.add_argument('--Storing_wandbProject', type=str, default='None')
     # For not using W&B, use '--Storing_wandbProject None' ==> None in str
     parser.add_argument('--Storing_wandbEntity', type=str)
     parser.add_argument('--Storing_wandbTags', type=str, nargs='+', default=['Default'])
@@ -60,8 +62,10 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     # Creating saving folders
+    print(f"args['Storing_savingPath']: {args['Storing_savingPath']}")
     exp_path = create_folder(args['Storing_savingPath'])
-    exp_path = create_folder(exp_path, args['Storing_wandbProject'])
+    if args['Storing_wandbProject'] != 'None':
+        exp_path = create_folder(exp_path, args['Storing_wandbProject'])
     exp_path = create_folder(exp_path, args['Storing_experimentName'])
 
     # Creating the objects
@@ -125,6 +129,7 @@ if __name__ == '__main__':
     )
 
     data_module = src.MultiEarthDataModule(**src.get_args(args, 'DataModule'))
+    print(f'network: {src.get_args(args, 'Network')}')
     network = src.Network(**src.get_args(args, 'Network'))
     loss = src.LossFunction(**src.get_args(args, 'Loss'))
     score = {k: src.SegmentationScores(**src.get_args(args, 'Score')) for k in ['Train', 'Validation', 'Test']}
@@ -139,6 +144,7 @@ if __name__ == '__main__':
     )
 
     # Training
+    import pdb; pdb.set_trace()
     trainer.fit(model=experiment, datamodule=data_module)
 
     # Testing
